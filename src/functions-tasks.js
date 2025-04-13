@@ -73,8 +73,10 @@ function getArgumentsCount(funcs) {
  *   power05(16) => 4
  *
  */
-function getPowerFunction(/* exponent */) {
-  throw new Error('Not implemented');
+function getPowerFunction(exponent) {
+  return function pow(elem) {
+    return elem ** exponent;
+  };
 }
 
 /**
@@ -90,8 +92,16 @@ function getPowerFunction(/* exponent */) {
  *   getPolynom(8)     => y = 8
  *   getPolynom()      => null
  */
-function getPolynom() {
-  throw new Error('Not implemented');
+function getPolynom(...args) {
+  if (args.length === 0) return null;
+  return function polynom(x) {
+    let sum = 0;
+    for (let i = 0; i < args.length; i += 1) {
+      const pow = args.length - i - 1;
+      sum += args[i] * x ** pow;
+    }
+    return sum;
+  };
 }
 
 /**
@@ -108,8 +118,17 @@ function getPolynom() {
  *   ...
  *   memoizer() => the same random number  (next run, returns the previous cached result)
  */
-function memoize(/* func */) {
-  throw new Error('Not implemented');
+function memoize(func) {
+  let called = false;
+  let result;
+
+  return function callable() {
+    if (!called) {
+      result = func();
+      called = true;
+    }
+    return result;
+  };
 }
 
 /**
@@ -127,8 +146,19 @@ function memoize(/* func */) {
  * }, 2);
  * retryer() => 2
  */
-function retry(/* func, attempts */) {
-  throw new Error('Not implemented');
+function retry(func, attempts) {
+  return function throwError() {
+    let lastError;
+
+    for (let i = 0; i < attempts; i += 1) {
+      try {
+        return func();
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
 }
 
 /**
